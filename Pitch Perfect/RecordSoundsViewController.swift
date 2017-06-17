@@ -27,16 +27,11 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
         stopRecordingButton.isEnabled = false
     }
     
-    // Mark: viewWillAppear
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-    }
 
     // Mark: recordAudio
     
     @IBAction func recordAudio(_ sender: Any) {
-        configureUI(labelText: "Tap To Record", isRecording: true)
+        configureUI(labelText: "Stop Recording", isRecording: true)
         
         let dirPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0] as String
         let recordingName = "recordingVoice.wav"
@@ -52,15 +47,12 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
         audioRecorder.prepareToRecord()
         audioRecorder.record()
         
-        
-        
     }
     
     // Mark: stopRecording
 
     @IBAction func stopRecording(_ sender: Any) {
         configureUI(labelText: "Tap To Record")
-        
         audioRecorder.stop()
         let audioSession = AVAudioSession.sharedInstance()
         try! audioSession.setActive(false)
@@ -74,7 +66,7 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
         if flag{
             performSegue(withIdentifier: "stopRecording", sender: audioRecorder.url)
         }else{
-            print("Recording was successful")
+            show(UIAlertController(title:"Error!", message: "Something went wrong!", preferredStyle: UIAlertControllerStyle.alert), sender:self)
         }
         
     }
@@ -93,8 +85,8 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
     
     func configureUI(labelText: String, isRecording: Bool = false){
         recordingLabel.text = labelText
-        stopRecordingButton.isEnabled = (isRecording) ? true : false
-        recordButton.isEnabled = (isRecording) ? false : true
+        stopRecordingButton.isEnabled = isRecording
+        recordButton.isEnabled = !isRecording
         
     }
     
